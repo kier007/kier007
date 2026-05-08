@@ -1,4 +1,4 @@
-# MAKARU
+# DOPAN
 
 > "The mathematics of perception exists between the quantum states of observation and transformation."
 
