@@ -27,7 +27,7 @@ $$
 and let $\rho$ be a probability measure on $\mathcal{H}_{X}\times\mathcal{H}_{Y}$. Engineering begins where empirical fit becomes a constrained variational problem:
 
 $$
-T^{\star}\in\operatorname*{arg\,inf}_{T\in\mathcal{A}}
+T^{\star}\in\arg\min_{T\in\mathcal{A}}
 \left\{
 \int_{\mathcal{H}_{X}\times\mathcal{H}_{Y}}
 \ell\!\left(Tx,y\right)\,d\rho(x,y)
@@ -37,9 +37,9 @@ $$
 
 $$
 \mathcal{A}=\left\{T:
-\operatorname{correct}(T)\land
-\operatorname{observable}(T)\land
-\operatorname{deployable}(T)
+\mathrm{correct}(T)\land
+\mathrm{observable}(T)\land
+\mathrm{deployable}(T)
 \right\}.
 $$
 
@@ -62,7 +62,7 @@ $$
 then seeks a policy over the belief state:
 
 $$
-\pi^{\star}\in\operatorname*{arg\,sup}_{\pi}
+\pi^{\star}\in\arg\max_{\pi}
 \mathbb{E}_{\pi}\!\left[
 \sum_{t=0}^{\infty}\gamma^{t}
 \left(r_t-\beta c_t\right)
