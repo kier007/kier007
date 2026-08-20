@@ -24,23 +24,23 @@ $$
 T_{\theta}:(\mathcal{H}_{X},\Sigma_X)\longrightarrow(\mathcal{H}_{Y},\Sigma_Y),
 $$
 
-and let $\rho$ be a probability measure on $\mathcal{H}_{X}\times\mathcal{H}_{Y}$. Engineering begins where empirical fit becomes a constrained variational problem:
+and let $\rho$ be a probability measure on the product space above. Engineering begins where empirical fit becomes a constrained variational problem:
 
 $$
 T^{\star}\in\arg\min_{T\in\mathcal{A}}
-\left\{
+\{
 \int_{\mathcal{H}_{X}\times\mathcal{H}_{Y}}
-\ell\!\left(Tx,y\right)\,d\rho(x,y)
+\ell(Tx,y)\,d\rho(x,y)
 +\lambda\,\Omega(T)
-\right\},
+\},
 $$
 
 $$
-\mathcal{A}=\left\{T:
+\mathcal{A}=\{T:
 \mathrm{correct}(T)\land
 \mathrm{observable}(T)\land
 \mathrm{deployable}(T)
-\right\}.
+\}.
 $$
 
 > **Riddle 01.** I minimize expected risk over an infinite space, yet the smallest loss cannot admit me to $\mathcal{A}$. What completes the proof?
@@ -54,20 +54,20 @@ $$
 A control-theoretic view treats the repository as a partially observed state $s_t$. From observations $o_{0:t}$, actions $a_{0:t-1}$, and memory $m_t$, the agent maintains
 
 $$
-b_t(s)=\Pr\!\left(
+b_t(s)=\Pr(
 s_t=s\mid o_{0:t},a_{0:t-1},m_t
-\right),
+),
 $$
 
 then seeks a policy over the belief state:
 
 $$
 \pi^{\star}\in\arg\max_{\pi}
-\mathbb{E}_{\pi}\!\left[
+\mathbb{E}_{\pi}[
 \sum_{t=0}^{\infty}\gamma^{t}
-\left(r_t-\beta c_t\right)
-\,\middle|\,b_0
-\right],
+(r_t-\beta c_t)
+\mid b_0
+],
 \qquad 0<\gamma<1.
 $$
 
@@ -102,10 +102,10 @@ $$
 Given validation errors
 
 $$
-e_i=\left(
+e_i=(
 \frac{1}{n}\sum_{t=1}^{n}
-\left(y_t-\widehat y_{i,t}\right)^2
-\right)^{1/2}>0,
+(y_t-\widehat y_{i,t})^2
+)^{1/2}>0,
 $$
 
 the hybrid forecast is the barycenter
@@ -144,7 +144,7 @@ $$
 A wireless channel with bandwidth $B$ and signal-to-noise ratio $\mathrm{SNR}$ has capacity
 
 $$
-C=B\log_2\!\left(1+\mathrm{SNR}\right),
+C=B\log_2(1+\mathrm{SNR}),
 \qquad
 R(D)\le C.
 $$
