@@ -6,6 +6,22 @@ I build systems that reason over code, uncertainty, and real-time signals.
 
 **Agentic systems · stochastic forecasting · computer vision**
 
+## Contribution / live process
+
+Treat public activity as a discrete contribution process
+
+```math
+c_d=\sum_{r\in\mathcal{R}}\Delta N_r(d),
+\qquad
+d\in\mathbb{Z}.
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-activity-graph.vercel.app/graph?username=kier007&amp;theme=github-dark&amp;hide_border=true&amp;area=true&amp;custom_title=Contribution%20process%20c%28d%29">
+  <source media="(prefers-color-scheme: light)" srcset="https://github-readme-activity-graph.vercel.app/graph?username=kier007&amp;theme=github-light&amp;hide_border=true&amp;area=true&amp;custom_title=Contribution%20process%20c%28d%29">
+  <img alt="Live GitHub contribution process for kier007" src="https://github-readme-activity-graph.vercel.app/graph?username=kier007&amp;theme=github-light&amp;hide_border=true&amp;area=true&amp;custom_title=Contribution%20process%20c%28d%29" width="100%">
+</picture>
+
 ---
 
 ## Proof / 01 — Measurable operators under constraints
