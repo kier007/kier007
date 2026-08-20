@@ -24,15 +24,28 @@ Write an inference system abstractly as a measurable operator
 T_{\theta}:(\mathcal{H}_{X},\Sigma_X)\longrightarrow(\mathcal{H}_{Y},\Sigma_Y),
 ```
 
-and let $\rho$ be a probability measure on the product space above. Engineering begins where empirical fit becomes a constrained variational problem:
+Let the data law be a probability measure on the measurable product space
 
 ```math
-T^{\star}\in\arg\min_{T\in\mathcal{A}}
+\rho\in\mathcal{P}(
+\mathcal{H}_{X}\times\mathcal{H}_{Y},
+\Sigma_X\otimes\Sigma_Y
+).
+```
+
+Engineering begins where expected risk becomes a constrained variational problem:
+
+```math
+\inf_{T\in\mathcal{A}}
 \{
 \int_{\mathcal{H}_{X}\times\mathcal{H}_{Y}}
 \ell(Tx,y)\,d\rho(x,y)
 +\lambda\,\Omega(T)
 \},
+\qquad
+\mathcal{A}\ne\varnothing,
+\quad
+\lambda\ge0.
 ```
 
 ```math
@@ -51,18 +64,20 @@ T^{\star}\in\arg\min_{T\in\mathcal{A}}
 
 [RepoPilot Sentinel](https://github.com/kier007/RepoPilot-Sentinel) is an autonomous GitHub maintainer agent with tool execution, structured memory, capability synthesis, and human-gated writes.
 
-A control-theoretic view treats the repository as a partially observed state $s_t$. From observations $o_{0:t}$, actions $a_{0:t-1}$, and memory $m_t$, the agent maintains
+A control-theoretic view treats the repository as a partially observed state on a measurable space. From observations $o_{0:t}$, actions $a_{0:t-1}$, and memory $m_t$, the agent maintains the belief measure
 
 ```math
-b_t(s)=\Pr(
-s_t=s\mid o_{0:t},a_{0:t-1},m_t
+b_t(E)=\Pr(
+s_t\in E\mid o_{0:t},a_{0:t-1},m_t
 ),
+\qquad
+E\in\Sigma_S.
 ```
 
-then seeks a policy over the belief state:
+Policies over the belief state are evaluated through
 
 ```math
-\pi^{\star}\in\arg\max_{\pi}
+V^{\star}(b_0)=\sup_{\pi}
 \mathbb{E}_{\pi}[
 \sum_{t=0}^{\infty}\gamma^{t}
 (r_t-\beta c_t)
@@ -76,10 +91,10 @@ Memory and write authority evolve on separate paths:
 ```math
 m_{t+1}=U(m_t,o_t,a_t,r_t),
 \qquad
-g_t=\mathbf{1}_{A_t\cap V_t},
+g_t=\mathbf{1}\{A_t=1\land V_t=1\}.
 ```
 
-where $A_t$ is authorization, $V_t$ is validation, and $g_t$ is the write gate.
+Here $A_t$ and $V_t$ are Boolean authorization and validation indicators, and $g_t$ is the write gate.
 
 > **Riddle 02.** I am neither the hidden state, the belief, the observation, nor the reward. Remove me, and the agent can succeed once but cannot learn from having succeeded. What am I?
 
@@ -89,14 +104,14 @@ where $A_t$ is authorization, $V_t$ is validation, and $g_t$ is the write gate.
 
 [Propsarim](https://github.com/kier007/Propsarim) combines SARIMA and Prophet forecasts using inverse-validation-error weights.
 
-For the backshift operator $B$, a seasonal stochastic process satisfies
+For the backshift operator $B$, a multiplicative seasonal ARIMA process may be written as
 
 ```math
 \Phi(B)\Phi_s(B^s)(1-B)^d(1-B^s)^D y_t
 =
 \Theta(B)\Theta_s(B^s)\varepsilon_t,
 \qquad
-\varepsilon_t\sim\mathcal{WN}(0,\sigma^2).
+\{\varepsilon_t\}_{t\in\mathbb{Z}}\sim\mathrm{WN}(0,\sigma^2).
 ```
 
 Given validation errors
@@ -121,8 +136,12 @@ w_i=\frac{e_i^{-1}}{\sum_j e_j^{-1}},
 If every competing error remains bounded away from zero, then
 
 ```math
-\lim_{e_k\to0^+}\boldsymbol{w}=\boldsymbol{e}_k.
+\lim_{e_k\to0^+}\boldsymbol{w}=\boldsymbol{u}_k,
+\qquad
+\boldsymbol{u}_k=(0,\ldots,0,1,0,\ldots,0)\in\Delta^{k-1}.
 ```
+
+Here $\boldsymbol{u}_k$ is the $k$th standard basis vector.
 
 > **Riddle 03.** As one forecast becomes exact, a probability vector collapses onto a vertex of the simplex. Which voices survive the limit?
 
@@ -132,7 +151,7 @@ If every competing error remains bounded away from zero, then
 
 [See2ruMeta](https://github.com/kier007/See2ruMeta) is a Meta Quest-to-Android passthrough streaming system built around real-time vision, WebRTC, and latency-aware delivery.
 
-Let $X$ be a visual source and $\widehat X$ its reconstruction. The rate–distortion boundary is
+Let $X$ be a visual source and $\widehat X$ its reconstruction. The rate–distortion boundary, measured in bits per source symbol, is
 
 ```math
 R(D)=
@@ -141,24 +160,30 @@ R(D)=
 I(X;\widehat X).
 ```
 
-A wireless channel with bandwidth $B$ and signal-to-noise ratio $\mathrm{SNR}$ has capacity
+An ideal band-limited AWGN channel with bandwidth $B$ and signal-to-noise ratio $\mathrm{SNR}$ has Shannon capacity, in bits per second,
 
 ```math
-C=B\log_2(1+\mathrm{SNR}),
-\qquad
-R(D)\le C.
+C=B\log_2(1+\mathrm{SNR}).
 ```
 
-Yet admissible bitrate does not erase accumulated delay:
+For a source-symbol rate $f_s$ in symbols per second, source–channel separation gives the dimensionally consistent feasibility condition
+
+```math
+f_sR(D)\le C.
+```
+
+A first-order additive latency budget can be written as
 
 ```math
 L_{\mathrm{e2e}}
-=L_{\mathrm{capture}}
+\approx L_{\mathrm{capture}}
 +L_{\mathrm{encode}}
 +L_{\mathrm{network}}
 +L_{\mathrm{decode}}
 +L_{\mathrm{display}}.
 ```
+
+Stage overlap can reduce realized latency; buffering and queueing can increase it.
 
 > **Riddle 04.** Lower distortion demands rate, rate is bounded by capacity, and every stage contributes latency. Which constraint cannot be optimized in isolation?
 
