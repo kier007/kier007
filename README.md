@@ -4,115 +4,168 @@
 
 I build systems that reason over code, uncertainty, and real-time signals.
 
-**Agentic systems · statistical forecasting · computer vision**
+**Agentic systems · stochastic forecasting · computer vision**
 
 ---
 
-## Proof / 01 — The algebra of a useful system
+## Proof / 01 — Measurable operators under constraints
 
-Let the problem space be
+Let observations and outputs inhabit complex Hilbert spaces
 
 $$
-\mathcal{X} = \mathcal{X}_{\text{code}} \cup \mathcal{X}_{\text{time}} \cup \mathcal{X}_{\text{vision}},
+\mathcal{H}_{X}=L^{2}(\Omega_X,\mu;\mathbb{C}^{d}),
 \qquad
-\mathcal{Y} = \mathcal{Y}_{\text{decisions}} \cup \mathcal{Y}_{\text{forecasts}} \cup \mathcal{Y}_{\text{streams}}.
+\mathcal{H}_{Y}=L^{2}(\Omega_Y,\nu;\mathbb{C}^{m}).
 $$
 
-I work on functions
+Write an inference system abstractly as a measurable operator
 
 $$
-f_{\theta}: \mathcal{X} \rightarrow \mathcal{Y}
+T_{\theta}:(\mathcal{H}_{X},\Sigma_X)\longrightarrow(\mathcal{H}_{Y},\Sigma_Y),
 $$
 
-subject to one practical condition:
+and let $\rho$ be a probability measure on $\mathcal{H}_{X}\times\mathcal{H}_{Y}$. Engineering begins where empirical fit becomes a constrained variational problem:
 
 $$
-\operatorname{useful}(f_{\theta})
-= \operatorname{correct}(f_{\theta})
-\land \operatorname{observable}(f_{\theta})
-\land \operatorname{deployable}(f_{\theta}).
+T^{\star}\in\operatorname*{arg\,inf}_{T\in\mathcal{A}}
+\left\{
+\int_{\mathcal{H}_{X}\times\mathcal{H}_{Y}}
+\ell\!\left(Tx,y\right)\,d\rho(x,y)
++\lambda\,\Omega(T)
+\right\},
 $$
 
-> **Riddle 01.** I translate ambiguity into a measurable decision. A model can describe me, but only a working system can prove me. What am I?
+$$
+\mathcal{A}=\left\{T:
+\operatorname{correct}(T)\land
+\operatorname{observable}(T)\land
+\operatorname{deployable}(T)
+\right\}.
+$$
+
+> **Riddle 01.** I minimize expected risk over an infinite space, yet the smallest loss cannot admit me to $\mathcal{A}$. What completes the proof?
 
 ---
 
-## Proof / 02 — A function over projects
+## Proof / 02 — Belief, memory, and action
 
-Define the project set and its engineering domains:
+[RepoPilot Sentinel](https://github.com/kier007/RepoPilot-Sentinel) is an autonomous GitHub maintainer agent with tool execution, structured memory, capability synthesis, and human-gated writes.
+
+A control-theoretic view treats the repository as a partially observed state $s_t$. From observations $o_{0:t}$, actions $a_{0:t-1}$, and memory $m_t$, the agent maintains
 
 $$
-\mathcal{P} = \{R,F,V\},
-\qquad
-\mathcal{D} = \{\text{agents},\text{forecasting},\text{real-time vision}\},
-\qquad
-g: \mathcal{P} \rightarrow \mathcal{D}.
+b_t(s)=\Pr\!\left(
+s_t=s\mid o_{0:t},a_{0:t-1},m_t
+\right),
 $$
 
-| Element | Project | Domain | Evidence |
-|:--:|---|---|---|
-| $R$ | [RepoPilot Sentinel](https://github.com/kier007/RepoPilot-Sentinel) | Autonomous agents | GitHub tool execution, structured memory, safe capability synthesis, and human-gated writes |
-| $F$ | [Propsarim](https://github.com/kier007/Propsarim) | Statistical forecasting | SARIMA and Prophet combined through validation-weighted ensembling |
-| $V$ | [See2ruMeta](https://github.com/kier007/See2ruMeta) | Real-time vision | Meta Quest-to-Android passthrough streaming over a latency-aware WebRTC pipeline |
+then seeks a policy over the belief state:
 
-> **Riddle 02.** A repository, a time series, and a stereoscopic stream enter the same function. Its form changes for every input; its purpose does not. What remains invariant?
+$$
+\pi^{\star}\in\operatorname*{arg\,sup}_{\pi}
+\mathbb{E}_{\pi}\!\left[
+\sum_{t=0}^{\infty}\gamma^{t}
+\left(r_t-\beta c_t\right)
+\,\middle|\,b_0
+\right],
+\qquad 0<\gamma<1.
+$$
+
+Memory and write authority evolve on separate paths:
+
+$$
+m_{t+1}=U(m_t,o_t,a_t,r_t),
+\qquad
+g_t=\mathbf{1}_{A_t\cap V_t},
+$$
+
+where $A_t$ is authorization, $V_t$ is validation, and $g_t$ is the write gate.
+
+> **Riddle 02.** I am neither the hidden state, the belief, the observation, nor the reward. Remove me, and the agent can succeed once but cannot learn from having succeeded. What am I?
 
 ---
 
-## Proof / 03 — Fractions, limits, and constraints
+## Proof / 03 — Forecasts as stochastic processes
 
-For forecasting models with validation errors $e_i = \operatorname{RMSE}_i > 0$, Propsarim assigns
+[Propsarim](https://github.com/kier007/Propsarim) combines SARIMA and Prophet forecasts using inverse-validation-error weights.
+
+For the backshift operator $B$, a seasonal stochastic process satisfies
 
 $$
-w_i = \frac{e_i^{-1}}{\sum_j e_j^{-1}},
+\Phi(B)\Phi_s(B^s)(1-B)^d(1-B^s)^D y_t
+=
+\Theta(B)\Theta_s(B^s)\varepsilon_t,
 \qquad
-\widehat{y}_{\text{hybrid}} = \sum_i w_i\widehat{y}_i,
+\varepsilon_t\sim\mathcal{WN}(0,\sigma^2).
+$$
+
+Given validation errors
+
+$$
+e_i=\left(
+\frac{1}{n}\sum_{t=1}^{n}
+\left(y_t-\widehat y_{i,t}\right)^2
+\right)^{1/2}>0,
+$$
+
+the hybrid forecast is the barycenter
+
+$$
+w_i=\frac{e_i^{-1}}{\sum_j e_j^{-1}},
 \qquad
-\sum_i w_i = 1.
+\widehat y_{H,t}=\sum_i w_i\widehat y_{i,t},
+\qquad
+\boldsymbol{w}\in\Delta^{k-1}.
 $$
 
-If every competing error remains positive, then
+If every competing error remains bounded away from zero, then
 
 $$
-\lim_{e_i \to 0^+} w_i = 1.
+\lim_{e_k\to0^+}\boldsymbol{w}=\boldsymbol{e}_k.
 $$
 
-For a real-time media path such as See2ruMeta, latency is additive:
-
-$$
-L_{\text{end-to-end}}
-= L_{\text{capture}}
-+ L_{\text{encode}}
-+ L_{\text{network}}
-+ L_{\text{decode}}
-+ L_{\text{display}}.
-$$
-
-> **Riddle 03.** Two forecasters share a vote in inverse proportion to error; five stages share a delay by addition. When one term dominates, which system fails first?
+> **Riddle 03.** As one forecast becomes exact, a probability vector collapses onto a vertex of the simplex. Which voices survive the limit?
 
 ---
 
-## Proof / 04 — Probability in a small space
+## Proof / 04 — Vision across a finite channel
 
-| System | Reason | Predict | Perceive |
-|---|:---:|:---:|:---:|
-| RepoPilot Sentinel | $1$ | $0$ | $0$ |
-| Propsarim | $0$ | $1$ | $0$ |
-| See2ruMeta | $0$ | $0$ | $1$ |
-| Dopan / kier007 | $?$ | $?$ | $?$ |
+[See2ruMeta](https://github.com/kier007/See2ruMeta) is a Meta Quest-to-Android passthrough streaming system built around real-time vision, WebRTC, and latency-aware delivery.
+
+Let $X$ be a visual source and $\widehat X$ its reconstruction. The rate–distortion boundary is
+
+$$
+R(D)=
+\inf_{p(\widehat x\mid x):\,
+\mathbb{E}[d(X,\widehat X)]\le D}
+I(X;\widehat X).
+$$
+
+A wireless channel with bandwidth $B$ and signal-to-noise ratio $\mathrm{SNR}$ has capacity
+
+$$
+C=B\log_2\!\left(1+\mathrm{SNR}\right),
+\qquad
+R(D)\le C.
+$$
+
+Yet admissible bitrate does not erase accumulated delay:
+
+$$
+L_{\mathrm{e2e}}
+=L_{\mathrm{capture}}
++L_{\mathrm{encode}}
++L_{\mathrm{network}}
++L_{\mathrm{decode}}
++L_{\mathrm{display}}.
+$$
+
+> **Riddle 04.** Lower distortion demands rate, rate is bounded by capacity, and every stage contributes latency. Which constraint cannot be optimized in isolation?
+
+---
 
 Working set: **Python · FastAPI · agent/tool orchestration · time-series modeling · WebRTC · Unity · Docker · SQLite**
 
-$$
-\Pr(\text{ship} \mid \text{model},\text{system},\text{evidence})
-\;?\;
-\Pr(\text{ship} \mid \text{model}).
-$$
-
-> **Riddle 04.** Complete the inequality. Then complete the final row of the matrix.
-
----
-
-The remaining proof is in the work.
+The proofs remain open. The systems do not.
 
 [Explore the repositories or collaborate on GitHub →](https://github.com/kier007?tab=repositories)
