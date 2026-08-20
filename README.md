@@ -56,7 +56,7 @@ Engineering begins where expected risk becomes a constrained variational problem
 \}.
 ```
 
-> **Riddle 01.** I minimize expected risk over an infinite space, yet the smallest loss cannot admit me to $\mathcal{A}$. What completes the proof?
+> **Riddle 01.** I seek the infimum of expected risk over an infinite space, yet approaching the lowest loss cannot admit me to $\mathcal{A}$. What completes the proof?
 
 ---
 
@@ -166,11 +166,13 @@ An ideal band-limited AWGN channel with bandwidth $B$ and signal-to-noise ratio 
 C=B\log_2(1+\mathrm{SNR}).
 ```
 
-For a source-symbol rate $f_s$ in symbols per second, source–channel separation gives the dimensionally consistent feasibility condition
+For a source-symbol rate $f_s$ in symbols per second, the information-theoretic boundary is
 
 ```math
 f_sR(D)\le C.
 ```
+
+Strict inequality corresponds to operation inside the asymptotically achievable region.
 
 A first-order additive latency budget can be written as
 
